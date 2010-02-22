@@ -114,8 +114,14 @@ __rvm_debug() {
 }
 
 __rvm_strings() {
-  for rvm_ruby_string in $(echo $rvm_ruby_args) ; do
-    results="$results $(__rvm_select ; echo $rvm_ruby_string)"
+  for query_string in $(echo $rvm_ruby_args) ; do
+	rvm_ruby_string="$query_string"
+	__rvm_ruby_string 2> /dev/null
+	if [[ "$?" != "0" ]] || [[ "$rvm_ruby_string" = "$query_string" ]] ; then
+		return 1
+	else
+	    results="$results $(__rvm_select ; echo $rvm_ruby_string)"
+	fi
   done
   echo $results
   unset results
